@@ -89,8 +89,8 @@ void enterBootloader(void){
 
 int main(void){
 	// Pull up PR0 to test if it's being pulled low
-	PORTR.DIR = 0;
-	PORTR.PIN0CTRL = PORT_OPC_PULLUP_gc;
+	PORTE.DIR = 0;
+	PORTE.PIN3CTRL = PORT_OPC_PULLUP_gc;
 	
 	_delay_us(1000);
 
@@ -98,12 +98,12 @@ int main(void){
 	// there's nothing useful in app flash
 	uint16_t reset_vect_value = pgm_read_word(0);
 	
-	if (!(PORTR.IN & 0x01) || reset_vect_value == 0xFFFF){
+	if (!(PORTE.IN & 0x04) || reset_vect_value == 0xFFFF){
 		runBootloader();
 	}
 	
 	// Otherwise, clean up and jump to the app
-	PORTR.PIN0CTRL = 0;
+	PORTE.PIN3CTRL = 0;
 	EIND = 0x00;
 	void (*reset_vect)( void ) = 0x000000;
     reset_vect();
